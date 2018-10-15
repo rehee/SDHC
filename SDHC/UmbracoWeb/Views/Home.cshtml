@@ -1,0 +1,77 @@
+﻿@inherits Umbraco.Web.Mvc.UmbracoTemplatePage
+@using ContentModels = Umbraco.Web.PublishedContentModels;
+@using UmbracoExamine
+@using Examine
+@using Examine.LuceneEngine
+@using Examine.SearchCriteria
+@using Examine.LuceneEngine.SearchCriteria
+@using System.Linq
+@{
+    Layout = null;
+    var home = Umbraco.TypedContent(E.HomePage.Id);
+    //var pages = E.MyGetChildByRootId(E.HomePage.Id, b => b.Published, true, "home_search_6").ToList();
+
+    var email = home.IContentTo<SpxusUmbracoEmailKey>();
+    var start = DateTime.Now;
+    var pages = E.MyGetIPublishContentsByType("page", b => true, false).ToList();
+    //var pages = E.MyGetIPublichContentsChildByRootId(E.HomePage.Id, b => true, true, "00004").ToList();
+    //E.HomePage.IContentTo
+    //var pages = Umbraco.TypedContent(E.HomePage.Id).Descendants("213").ToList();
+    //var pages = E.Services.ContentService.GetDescendants(E.HomePage.Id).Where(b=>b.GetValueNull<string>("title")=="title").ToList();
+    //var pages = E.Services.ContentService.GetChildren(E.HomePage.Id).ToList();
+    //Umbraco.TypedContent(E.HomePage.Id).Descendants().ToList();
+    //var searchCriteria = ExamineManager.Instance.DefaultSearchProvider
+    //.CreateSearchCriteria(IndexTypes.Content);
+
+    //var searcher = Examine.ExamineManager.Instance.SearchProviderCollection["ExternalSearcher"];
+    //var searchCriteria = ExamineManager.Instance.DefaultSearchProvider
+    //.CreateSearchCriteria(Examine.SearchCriteria.BooleanOperation.Or);
+
+    //  var querystring = Request.QueryString["query"];
+
+    //var query = searchCriteria.Field("nodeName","page".MultipleCharacterWildcard());
+    //var query = searchCriteria.GroupedOr(new[] { "title" }, new[] { "tit".Fuzzy(0.01f), "page".Fuzzy(0.1f) });
+    //var query = searchCriteria.Field("title", "ti".Fuzzy(0.1f)).Or().Field("title","ti".Boost(5));
+    //var pages = searcher.Search(query.Compile()).ToList();
+
+    //var query = "f42c9f8a";
+    //var searcher = Examine.ExamineManager.Instance.SearchProviderCollection["ExternalSearcher"];
+
+    //var searchCriteria = searcher.CreateSearchCriteria(Examine.SearchCriteria.BooleanOperation.Or);
+    //var searchQuery = searchCriteria.Field("nodeName", "page".Fuzzy(0f));
+    //var test = searcher.Search(searchQuery.Compile()).ToList().OrderByDescending(b => b.DocId);
+    //var test = ExamineManager.Instance.DefaultSearchProvider.Search(query.Compile()).ToList();
+
+    //var test = ExamineManager.Instance.DefaultSearchProvider.Search("nodeName == \"f42c9f8a-0180-4d46-b735-993c82d5015e\"", false).ToList();
+    //var test = ExamineManager.Instance.DefaultSearchProvider.Search("nodeName.Contains(\"f42c9f8a\")", false).ToList();
+    //var pages = E.MyGetChildByRootId(E.HomePage.Id, b => b.Published, true, "home_search_3").ToList();
+    //var a = E.Services.ContentService.GetById(E.HomePage.Id);
+
+    //E.Helper.TypedContent(E.HomePage.Id).Descendants().Where(b=>b.Id==1).ToList();
+    //E.Services.ContentService.GetDescendants(-1).Where(b => b.Id == 1).ToList();
+    var end = DateTime.Now;
+    var spend = end - start;
+    var spends = 1;
+    var count = 0;
+    foreach (var item in pages)
+    {
+        count++;
+        var content = E.Services.ContentService.GetById(item.Id);
+        if (content != null)
+        {
+            E.Services.ContentService.Delete(content);
+        }
+        E.Services.ContentService.EmptyRecycleBin();
+    }
+
+    //for (var i = 0; i < 40; i++)
+    //{
+    //    int id;
+    //    E.CreateNodeIdRandonName(null, E.HomePage.Id, out id);
+    //}
+    //Umbraco.TypedContentAtRoot();
+
+
+
+}
+@spend.TotalMilliseconds @pages.Count
