@@ -13,15 +13,14 @@ namespace System
   {
     public static T GetValueNull<T>(this IContent input, string propertyAlias)
     {
+      var p = input.Properties.Where(b => b.Alias.Equals(propertyAlias, StringComparison.InvariantCultureIgnoreCase)).FirstOrDefault();
+      if (p == null)
+      {
+        return default(T);
+      }
       try
       {
         return input.GetValue<T>(propertyAlias);
-      }
-      catch { }
-      try
-      {
-        var value = input.Properties.Where(b => b.Alias.Equals(propertyAlias, StringComparison.InvariantCultureIgnoreCase)).FirstOrDefault();
-        return (T)Convert.ChangeType(value, typeof(T));
       }
       catch
       {
@@ -30,20 +29,20 @@ namespace System
     }
     public static T GetValueNull<T>(this IPublishedContent input, string propertyAlias)
     {
+      var p = input.Properties.Where(b => b.PropertyTypeAlias.Equals(propertyAlias, StringComparison.InvariantCultureIgnoreCase)).FirstOrDefault();
+      if (p == null)
+      {
+        return default(T);
+      }
       try
       {
         return input.GetPropertyValue<T>(propertyAlias);
-      }
-      catch { }
-      try
-      {
-        var value = input.Properties.Where(b => b.PropertyTypeAlias.Equals(propertyAlias, StringComparison.InvariantCultureIgnoreCase)).FirstOrDefault();
-        return (T)Convert.ChangeType(value, typeof(T));
       }
       catch
       {
         return default(T);
       }
+      
     }
   }
 }

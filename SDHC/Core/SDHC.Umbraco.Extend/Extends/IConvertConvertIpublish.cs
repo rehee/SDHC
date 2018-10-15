@@ -34,7 +34,6 @@ namespace Umbraco.Core
     /// </returns>
     public static IPublishedContent ToPublishedContent(this IContent content, bool isPreview = false)
     {
-      
       return new PublishedContent(content, isPreview);
     }
   }

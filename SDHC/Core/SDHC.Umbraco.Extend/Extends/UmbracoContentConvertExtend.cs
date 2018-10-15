@@ -30,8 +30,12 @@ namespace Umbraco.Core.Models
         {
           try
           {
+            if (input.Properties.IndexOfKey(p.Name) < 0)
+            {
+              continue;
+            }
             var value = input.GetValue(p.Name);
-            if (p.PropertyType.Name == "Boolean")
+            if (p.PropertyType == typeof(bool))
             {
               p.SetValue(result, value.ToBool());
               continue;
@@ -62,43 +66,17 @@ namespace Umbraco.Core.Models
         {
           try
           {
-            var value = input.GetProperty(p.Name);
-            if (p.PropertyType.Name == "Boolean")
+            if (input.Properties.Where(b => b.PropertyTypeAlias.Equals(p.Name, StringComparison.CurrentCultureIgnoreCase)).FirstOrDefault() == null)
             {
-              p.SetValue(result, value.DataValue.ToBool());
               continue;
             }
-            if (p.PropertyType.Name == "Int32")
+            var value = input.GetProperty(p.Name).Value;
+            if (p.PropertyType == typeof(bool))
             {
-              Int32.TryParse(G.Text(value.DataValue), out var vvalue);
-              p.SetValue(result, vvalue);
+              p.SetValue(result, value.ToBool());
               continue;
             }
-            if (p.PropertyType.Name == "Int64")
-            {
-              Int64.TryParse(G.Text(value.DataValue), out var vvalue);
-              p.SetValue(result, vvalue);
-              continue;
-            }
-            if (p.PropertyType.Name == "Decimal"|| p.PropertyType.Name == "decimal")
-            {
-              Decimal.TryParse(G.Text(value.DataValue), out var vvalue);
-              p.SetValue(result, vvalue);
-              continue;
-            }
-            if (p.PropertyType.Name == "float" || p.PropertyType.Name == "Float")
-            {
-              float.TryParse(G.Text(value.DataValue), out var vvalue);
-              p.SetValue(result, vvalue);
-              continue;
-            }
-            if (p.PropertyType.Name == "double" || p.PropertyType.Name == "Double")
-            {
-              double.TryParse(G.Text(value.DataValue), out var vvalue);
-              p.SetValue(result, vvalue);
-              continue;
-            }
-            p.SetValue(result, value.DataValue);
+            p.SetValue(result, value);
           }
           catch (Exception ex)
           {
@@ -149,14 +127,19 @@ namespace Umbraco.Core.Models
             b => b.GetProperties().ToList()
             .ForEach(c => propertys.Add(c))
             );
-        var obj = ((object)model).ConvertToDictionary();
+        //var obj = ((object)model).ConvertToDictionary();
         foreach (var p in propertys)
         {
+          if (content.Properties.Where(b => b.Alias.Equals(p.Name, StringComparison.OrdinalIgnoreCase)).FirstOrDefault() != null)
+          {
+            continue;
+          }
           try
           {
             var key = G.Text(p).Split(' ').FirstOrDefault();
-            var value = obj[p.Name];
-            if (key.Equals("System.Web.HttpPostedFileBase", StringComparison.OrdinalIgnoreCase) && value == null)
+            //var value = obj[p.Name];
+            var value = p.GetValue(model);
+            if (p.PropertyType == typeof(System.Web.HttpPostedFileBase) && value == null)
               continue;
             content.SetValue(p.Name, value);
           }

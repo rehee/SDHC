@@ -298,6 +298,8 @@
   <ItemGroup>
     <Compile Include="Areas\Emais\Controllers\SendController.cs" />
     <Compile Include="Areas\Emais\EmaisAreaRegistration.cs" />
+    <Compile Include="Areas\Test\Controllers\HomeController.cs" />
+    <Compile Include="Areas\Test\TestAreaRegistration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -325,6 +327,7 @@
     <Content Include="config\applications.config" />
     <Content Include="config\404handlers.config" />
     <Content Include="Areas\Emais\Views\web.config" />
+    <Content Include="Areas\Test\Views\web.config" />
     <None Include="packages.config" />
     <Content Include="Views\Web.config" />
     <Content Include="Views\Partials\Grid\Editors\Textstring.cshtml" />
@@ -355,6 +358,10 @@
       <Project>{10b46ab4-d5ed-4fdd-a683-6fe5ff31bf87}</Project>
       <Name>SDHC.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Core\SDHC.Umbraco.Extend\SDHC.Umbraco.Extend.csproj">
+      <Project>{d093e13a-864d-4192-81ce-a52e41782ab6}</Project>
+      <Name>SDHC.Umbraco.Extend</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SDHC.E\SDHC.E.csproj">
       <Project>{079ad801-bbef-44e6-beee-f5a021dfd5e8}</Project>
       <Name>SDHC.E</Name>
@@ -368,6 +375,9 @@
     <Folder Include="Areas\Emais\Models\" />
     <Folder Include="Areas\Emais\Views\Send\" />
     <Folder Include="Areas\Emais\Views\Shared\" />
+    <Folder Include="Areas\Test\Models\" />
+    <Folder Include="Areas\Test\Views\Home\" />
+    <Folder Include="Areas\Test\Views\Shared\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
