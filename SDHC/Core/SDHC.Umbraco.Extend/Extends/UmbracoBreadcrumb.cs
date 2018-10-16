@@ -33,7 +33,6 @@ namespace Umbraco.Core.Services
       listTemp.Reverse();
       list = listTemp;
     }
-
     public static List<int> GetBreadCrumbFunction(int id, Func<int, IContent> getContentById)
     {
       var list = new List<int>();

@@ -39,22 +39,23 @@ namespace System
     }
     public static object TryChangeType(this string value, Type type)
     {
-      if (StringTryConvert.ContainsKey(type))
+      try
       {
-        return StringTryConvert[type](value);
+        if (StringTryConvert.ContainsKey(type))
+          return StringTryConvert[type](value);
+        var TryParse = type.GetMethods()
+          .Where(b => b.Name == "TryParse" && b.GetParameters().Count() == 2).FirstOrDefault();
+        if (TryParse == null)
+          return Convert.ChangeType(value, type);
+        var paramsList = new object[] { value, null };
+        var result = TryParse.Invoke(null, paramsList);
+        return paramsList[1];
       }
-      var TryParse = type.GetMethods().Where(b => b.Name == "TryParse" && b.GetParameters().Count() == 2).FirstOrDefault();
-      if (TryParse == null)
-        return Convert.ChangeType(value, type);
-      var paramsList = new object[] { value, null };
-      var result = TryParse.Invoke(null, paramsList);
-      return paramsList[1];
+      catch
+      {
+        return null;
+      }
     }
-    #region Type TryConvert Function Dictionary
-    public static Dictionary<Type, Func<string, object>> StringTryConvert { get; set; } = new Dictionary<Type, Func<string, object>>()
-    {
-    };
-    #endregion
     public static void SetPropertyValue(this PropertyInfo p, object result, object value)
     {
       var pType = p.PropertyType;
@@ -76,11 +77,17 @@ namespace System
       }
       if (valueType == typeof(string))
       {
-        p.SetValue(result, ((string)value).TryChangeType(pType));
+        var convertObject = ((string)value).TryChangeType(pType);
+        if (convertObject != null)
+          p.SetValue(result, convertObject);
         return;
       }
       p.SetValue(result, Convert.ChangeType(value, pType));
     }
+    public static Dictionary<Type, Func<string, object>> StringTryConvert { get; set; } = new Dictionary<Type, Func<string, object>>()
+    {
+
+    };
   }
 
 }

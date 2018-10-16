@@ -19,6 +19,7 @@ namespace Umbraco.Core.Models
 
       types.Add(input);
     }
+    //convert function
     public static T IContentTo<T>(this IContent input) where T : IIdentifyId, new()
     {
       try
@@ -81,9 +82,7 @@ namespace Umbraco.Core.Models
         return default(T);
       }
     }
-   
-    
-
+    //set value
     public static IContent SetDynamicModel(this IContent content, dynamic model)
     {
       try
@@ -152,7 +151,6 @@ namespace Umbraco.Core.Models
       }
       return content;
     }
-
   }
 }
 

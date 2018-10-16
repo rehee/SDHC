@@ -168,9 +168,9 @@ namespace System
         return cache.Where(b => ids.Contains(b.Key)).Select(b => b.Value);
       };
     }
-    public static SDHCGetIPublishedContentByKey<int> MyGetIPublichContentByid { get; set; }
-    public static SDHCGetIPublishedContentsByKeys<int> MyGetIPublichContentsByIds { get; set; }
-    public static SDHCGetIPublishedContentsByKey<int> MyGetIPublichContentsChildByRootId { get; set; }
+    public static SDHCGetIPublishedContentByKey<int> MyGetIPublishContentByid { get; set; }
+    public static SDHCGetIPublishedContentsByKeys<int> MyGetIPublishContentsByIds { get; set; }
+    public static SDHCGetIPublishedContentsByKey<int> MyGetIPublishContentsChildByRootId { get; set; }
     public static SDHCGetIPublishedContentByString MyGetIPublishContentsByType { get; set; }
 
     public static void InitMyContentGet(IContentService service, IContentTypeService typeService)
@@ -190,11 +190,11 @@ namespace System
       MyGetChildByRootId = SpxusIContentRead.GetChildIContentByRootId<CacheIContent>(GetChildContentsByRootIdFromService(getChildrenFromHelper)
       , GetChildContentsByRootIdFromCache(), MyCache, MyQueryIsNew, 30);
 
-      MyGetIPublichContentByid = SDHCIPublishedContentRead.GetIPublishContentById<int, CacheIPublishContent>(
+      MyGetIPublishContentByid = SDHCIPublishedContentRead.GetIPublishContentById<int, CacheIPublishContent>(
         key => E.Helper.TypedContent(key), IPublishContentCache);
-      MyGetIPublichContentsByIds = SDHCIPublishedContentRead.GetIPublishContentsByIds<int, CacheIPublishContent>(
+      MyGetIPublishContentsByIds = SDHCIPublishedContentRead.GetIPublishContentsByIds<int, CacheIPublishContent>(
         ids => E.Helper.TypedContent(ids), GetIPublishContentCacheByIdsFromCache(), b => b.Id, IPublishContentCache, MyQueryIsNew, 30);
-      MyGetIPublichContentsChildByRootId = SDHCIPublishedContentRead.GetChildIPublishContentByRootId<int, CacheIPublishContent>(
+      MyGetIPublishContentsChildByRootId = SDHCIPublishedContentRead.GetChildIPublishContentByRootId<int, CacheIPublishContent>(
         GetChildIPublishContentsByRootIdFromService(getIPublishContentChildrenFromHelper), GetChildIPublishContentsByRootIdFromCache(), b => b.Id, IPublishContentCache, MyQueryIsNew, 30);
       MyGetIPublishContentsByType = SDHCIPublishedContentRead.GetIPublishContentsByContentTypeName<int, CacheIPublishContent>(
         type => () => E.Helper.TypedContentAtRoot().DescendantsOrSelf(type), MyGetIPublichContentByTypeFromCache(), b => b.Id, IPublishContentCache, MyQueryIsNew, 30);

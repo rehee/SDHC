@@ -8,7 +8,6 @@ using Umbraco.Core.Models;
 
 namespace Umbraco.Core.Services
 {
-  //
   public delegate T GetContentValue<T>(int pageId, string key, bool? keepAlive = null);
   public delegate IContent GetContent(int pageId, bool? keepAlive = null);
   public delegate dynamic GetContentValue(int pageId, string key, bool? keepAlive = null);
