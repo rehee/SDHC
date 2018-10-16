@@ -224,6 +224,7 @@
     <Compile Include="Extends\AuthExtend.cs" />
     <Compile Include="Extends\AreaRegistrationContextExtensions.cs" />
     <Compile Include="Extends\IConvertConvertIpublish.cs" />
+    <Compile Include="Extends\ReflectExtend.cs" />
     <Compile Include="Extends\UmbracoIContentCache.cs" />
     <Compile Include="Extends\UmbracoContentExtendUrl.cs" />
     <Compile Include="Extends\UmbracoContentExtend.cs" />

@@ -28,5 +28,14 @@ namespace System
       catch { }
       return default(T);
     }
+    public static object ConvertJsonToObject(this string input, Type type)
+    {
+      try
+      {
+        return JsonConvert.DeserializeObject(input.Text(), type);
+      }
+      catch { }
+      return null;
+    }
   }
 }

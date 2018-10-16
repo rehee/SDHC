@@ -30,17 +30,12 @@ namespace Umbraco.Core.Models
         {
           try
           {
-            if (input.Properties.IndexOfKey(p.Name) < 0)
+            if (!input.ContainAliasKey(p.Name, out var property))
             {
               continue;
             }
-            var value = input.GetValue(p.Name);
-            if (p.PropertyType == typeof(bool))
-            {
-              p.SetValue(result, value.ToBool());
-              continue;
-            }
-            p.SetValue(result, value);
+            var value = property.Value;
+            p.SetPropertyValue(result, value);
           }
           catch (Exception ex)
           {
@@ -66,17 +61,12 @@ namespace Umbraco.Core.Models
         {
           try
           {
-            if (input.Properties.Where(b => b.PropertyTypeAlias.Equals(p.Name, StringComparison.CurrentCultureIgnoreCase)).FirstOrDefault() == null)
+            if (!input.ContainAliasKey(p.Name, out var property))
             {
               continue;
             }
-            var value = input.GetProperty(p.Name).Value;
-            if (p.PropertyType == typeof(bool))
-            {
-              p.SetValue(result, value.ToBool());
-              continue;
-            }
-            p.SetValue(result, value);
+            var value = property.Value;
+            p.SetPropertyValue(result, value);
           }
           catch (Exception ex)
           {
@@ -91,6 +81,34 @@ namespace Umbraco.Core.Models
         return default(T);
       }
     }
+    public static void SetPropertyValue(this PropertyInfo p, object result, object value)
+    {
+      var pType = p.PropertyType;
+      if (pType == typeof(bool))
+      {
+        p.SetValue(result, value.ToBool());
+        return;
+      }
+      if (value == null)
+      {
+        p.SetValue(result, pType.GetDefaultValue());
+        return;
+      }
+      var valueType = value.GetType();
+      if (pType == valueType)
+      {
+        p.SetValue(result, value);
+        return;
+      }
+      if (valueType == typeof(string))
+      {
+        p.SetValue(result, ((string)value).TryChangeType(pType));
+        return;
+      }
+      p.SetValue(result, Convert.ChangeType(value, pType));
+    }
+    
+
     public static IContent SetDynamicModel(this IContent content, dynamic model)
     {
       try
@@ -100,6 +118,10 @@ namespace Umbraco.Core.Models
         {
           try
           {
+            if (!content.ContainAliasKey(k,out var p))
+            {
+              continue;
+            }
             content.SetValue(k, propertys[k]);
           }
           catch (Exception ex)
@@ -130,13 +152,13 @@ namespace Umbraco.Core.Models
         //var obj = ((object)model).ConvertToDictionary();
         foreach (var p in propertys)
         {
-          if (content.Properties.Where(b => b.Alias.Equals(p.Name, StringComparison.OrdinalIgnoreCase)).FirstOrDefault() != null)
+          if (!content.ContainAliasKey(p.Name,out var contentProperty))
           {
             continue;
           }
           try
           {
-            var key = G.Text(p).Split(' ').FirstOrDefault();
+            //var key = G.Text(p).Split(' ').FirstOrDefault();
             //var value = obj[p.Name];
             var value = p.GetValue(model);
             if (p.PropertyType == typeof(System.Web.HttpPostedFileBase) && value == null)
@@ -155,6 +177,7 @@ namespace Umbraco.Core.Models
       }
       return content;
     }
+
   }
 }
 

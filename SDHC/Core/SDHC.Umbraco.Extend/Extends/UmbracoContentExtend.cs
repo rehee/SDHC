@@ -13,14 +13,14 @@ namespace System
   {
     public static T GetValueNull<T>(this IContent input, string propertyAlias)
     {
-      var p = input.Properties.Where(b => b.Alias.Equals(propertyAlias, StringComparison.InvariantCultureIgnoreCase)).FirstOrDefault();
-      if (p == null)
+      input.ContainAliasKey(propertyAlias, out var p);
+      if (p == null || p.Value == null)
       {
         return default(T);
       }
       try
       {
-        return input.GetValue<T>(propertyAlias);
+        return p.Value.ConvertToGeneric<T>();
       }
       catch
       {
@@ -29,20 +29,31 @@ namespace System
     }
     public static T GetValueNull<T>(this IPublishedContent input, string propertyAlias)
     {
-      var p = input.Properties.Where(b => b.PropertyTypeAlias.Equals(propertyAlias, StringComparison.InvariantCultureIgnoreCase)).FirstOrDefault();
-      if (p == null)
+      input.ContainAliasKey(propertyAlias, out var p);
+      if (p == null || p.Value == null)
       {
         return default(T);
       }
       try
       {
-        return input.GetPropertyValue<T>(propertyAlias);
+        return p.Value.ConvertToGeneric<T>();
       }
       catch
       {
         return default(T);
       }
-      
+
+    }
+
+    public static bool ContainAliasKey(this IContent input, string propertyAlias, out Property property)
+    {
+      property = input.Properties.Where(b => b.Alias.Equals(propertyAlias, StringComparison.CurrentCultureIgnoreCase)).FirstOrDefault();
+      return property != null;
+    }
+    public static bool ContainAliasKey(this IPublishedContent input, string propertyAlias, out IPublishedProperty property)
+    {
+      property = input.Properties.Where(b => b.PropertyTypeAlias.Equals(propertyAlias, StringComparison.CurrentCultureIgnoreCase)).FirstOrDefault();
+      return property != null;
     }
   }
 }
