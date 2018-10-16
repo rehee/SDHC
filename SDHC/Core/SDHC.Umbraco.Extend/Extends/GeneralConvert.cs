@@ -1,15 +1,17 @@
-﻿using System;
+﻿using SDHC;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Umbraco.Core;
 
 namespace System
 {
   public static class GeneralConvert
   {
-    public static T MyConvertTo<T>(this object input, 
-      Dictionary<string, Func<string, object>> jsonObjectMap = null, 
+    public static T MyConvertTo<T>(this object input,
+      Dictionary<string, Func<string, object>> jsonObjectMap = null,
       Dictionary<string, Func<object, string>> objectJsonMap = null) where T : new()
     {
       if (jsonObjectMap == null)
@@ -19,32 +21,43 @@ namespace System
       try
       {
         var result = new T();
-        var type = typeof(T);
-        var propertys = type.GetProperties();
-        var obj = input.ConvertToDictionary();
-        foreach (var p in propertys)
+        var resultType = typeof(T);
+        var inputType = input.GetType();
+        var resultProperty = resultType.GetProperties();
+        var inputProperty = inputType.GetProperties();
+        foreach (var p in resultProperty)
         {
-          try
+          var inputP = inputProperty.Where(b => b.Name == p.Name).FirstOrDefault();
+          if (inputP == null)
+            continue;
+          var inputIsJson = inputP.CustomAttributes.Where(b=>b.AttributeType == typeof(JsonAttribute)).FirstOrDefault();
+          var resultIsJson = p.CustomAttributes.Where(b => b.AttributeType == typeof(JsonAttribute)).FirstOrDefault();
+          if (inputIsJson != null && resultIsJson != null)
           {
-            var key = G.Text(p).Split(' ').FirstOrDefault();
-            var item = obj[p.Name];
-            if (jsonObjectMap.ContainsKey(key))
+            if (p.PropertyType == typeof(String))
             {
-              p.SetValue(result, jsonObjectMap[key]((string)item));
-              continue;
+              var jsonString = inputP.GetValue(input).ConvertToJson();
+              p.SetValue(result, jsonString);
             }
-            var key3 = G.Text(item);
-            if (key.Equals("system.string", StringComparison.OrdinalIgnoreCase) && objectJsonMap.ContainsKey(key3))
+            else
             {
-              p.SetValue(result, objectJsonMap[key3](item));
-              continue;
+              var inputV = inputP.GetValue(input);
+              if (inputV == null)
+                continue;
+              var jsonObject = ((string)inputV).ConvertJsonToObject(p.PropertyType);
+              p.SetValue(result, jsonObject);
             }
-            p.SetValue(result, item);
+
+
+            continue;
           }
-          catch (Exception ex)
+          var inputValue = inputP.GetValue(input);
+          if (inputValue == null)
           {
-            Console.WriteLine(ex.Message);
+            p.SetValue(result, p.PropertyType.GetDefaultValue());
+            continue;
           }
+          p.SetPropertyValue(result, inputValue);
         }
         return result;
       }

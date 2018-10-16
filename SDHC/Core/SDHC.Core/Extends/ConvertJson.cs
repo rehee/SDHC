@@ -30,6 +30,8 @@ namespace System
     }
     public static object ConvertJsonToObject(this string input, Type type)
     {
+      if (String.IsNullOrEmpty(input))
+        return null;
       try
       {
         return JsonConvert.DeserializeObject(input.Text(), type);

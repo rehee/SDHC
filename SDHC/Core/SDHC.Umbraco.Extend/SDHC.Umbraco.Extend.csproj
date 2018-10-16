@@ -221,6 +221,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Attributes\JsonAttribute.cs" />
     <Compile Include="Extends\AuthExtend.cs" />
     <Compile Include="Extends\AreaRegistrationContextExtensions.cs" />
     <Compile Include="Extends\IConvertConvertIpublish.cs" />

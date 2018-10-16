@@ -1,10 +1,12 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using SDHC;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using Umbraco.Core;
 using Umbraco.Core.Models;
 namespace UmbracoWeb.Areas.Test.Controllers
 {
@@ -17,12 +19,31 @@ namespace UmbracoWeb.Areas.Test.Controllers
       //content.GetValueNull<string>("");
       //var c = E.Helper.TypedContent(content.Id);
       //var a = c.IContentTo<TT>();
-
-      var test = new TT();
-      test.ConvertToJson();
-      var result = JsonConvert.DeserializeObject(JsonConvert.SerializeObject(test), typeof(TT));
+      var a = typeof(TT);
+      var value = a.GetDefaultValue();
+      var test2 = new Test2();
+      var convertResult = test2.MyConvertTo<Test1>();
+      var convertBackT2 = convertResult.MyConvertTo<Test2>();
+      var t1Again = convertBackT2.MyConvertTo<Test1>();
       return Content("");
     }
+  }
+
+  public abstract class TestBase
+  {
+    
+    public string aa { get; set; } = "123";
+    [Json]
+    public virtual string p1 { get; set; }
+  }
+  public class Test1 : TestBase
+  {
+    
+  }
+  public class Test2 : TestBase
+  {
+    [Json]
+    public new TT p1 { get; set; } = new TT();
   }
 
   public class TT : IIdentifyId

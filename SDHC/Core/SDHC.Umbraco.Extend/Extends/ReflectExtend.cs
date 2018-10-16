@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using Umbraco.Core;
 
 namespace System
 {
@@ -53,6 +55,32 @@ namespace System
     {
     };
     #endregion
+    public static void SetPropertyValue(this PropertyInfo p, object result, object value)
+    {
+      var pType = p.PropertyType;
+      if (pType == typeof(bool))
+      {
+        p.SetValue(result, value.ToBool());
+        return;
+      }
+      if (value == null)
+      {
+        p.SetValue(result, pType.GetDefaultValue());
+        return;
+      }
+      var valueType = value.GetType();
+      if (pType == valueType)
+      {
+        p.SetValue(result, value);
+        return;
+      }
+      if (valueType == typeof(string))
+      {
+        p.SetValue(result, ((string)value).TryChangeType(pType));
+        return;
+      }
+      p.SetValue(result, Convert.ChangeType(value, pType));
+    }
   }
 
 }

@@ -81,32 +81,7 @@ namespace Umbraco.Core.Models
         return default(T);
       }
     }
-    public static void SetPropertyValue(this PropertyInfo p, object result, object value)
-    {
-      var pType = p.PropertyType;
-      if (pType == typeof(bool))
-      {
-        p.SetValue(result, value.ToBool());
-        return;
-      }
-      if (value == null)
-      {
-        p.SetValue(result, pType.GetDefaultValue());
-        return;
-      }
-      var valueType = value.GetType();
-      if (pType == valueType)
-      {
-        p.SetValue(result, value);
-        return;
-      }
-      if (valueType == typeof(string))
-      {
-        p.SetValue(result, ((string)value).TryChangeType(pType));
-        return;
-      }
-      p.SetValue(result, Convert.ChangeType(value, pType));
-    }
+   
     
 
     public static IContent SetDynamicModel(this IContent content, dynamic model)
