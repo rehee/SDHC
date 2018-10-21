@@ -310,6 +310,10 @@ namespace Umbraco.Core
     {
       get
       {
+        if (this.inner.ParentId <= 0)
+        {
+          return null;
+        }
         var parent = this.inner.Parent();
         return parent.ToPublishedContent(this.isPreviewing);
       }

@@ -55,13 +55,13 @@
   var count = 0;
   foreach (var item in pages)
   {
-    count++;
-    var content = E.Services.ContentService.GetById(item.Id);
-    if (content != null)
-    {
-      E.Services.ContentService.Delete(content);
-    }
-    E.Services.ContentService.EmptyRecycleBin();
+      count++;
+      var content = E.Services.ContentService.GetById(item.Id);
+      if (content != null)
+      {
+          E.Services.ContentService.Delete(content);
+      }
+      E.Services.ContentService.EmptyRecycleBin();
   }
 
   //for (var i = 0; i < 40; i++)
@@ -70,4 +70,8 @@
   //    E.CreateNodeIdRandonName(null, E.HomePage.Id, out id);
   //}
   //Umbraco.TypedContentAtRoot();
+  var home2 = E.MyGetIPublishContentByid(1063);
 }
+
+@(home2.GetValueNull<bool>("p1")) @(home2.GetValueNull<DateTime>("p1")))
+

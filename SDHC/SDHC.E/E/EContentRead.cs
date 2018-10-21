@@ -98,7 +98,7 @@ namespace System
       return (id, cache) =>
       {
         var copy = new Dictionary<int, CacheIPublishContent>(cache);
-        return copy.Where(b => b.Value.Content.Parent.Id == id).Select(b => b.Value);
+        return copy.Where(b => b.Value.Content.Parent != null && b.Value.Content.Parent.Id == id).Select(b => b.Value);
       };
     }
 
